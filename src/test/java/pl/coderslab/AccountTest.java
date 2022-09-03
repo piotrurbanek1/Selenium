@@ -1,5 +1,6 @@
 package pl.coderslab;
 
+import model.HotelMainPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,9 +43,8 @@ public class AccountTest {
         // Wejdz na strone glowna
         this.driver.get("https://hotel-testlab.coderslab.pl/en/");
 
-        // Wyszukaj przycisk do logowania
-        WebElement signInButton = this.driver.findElement(By.className("user_login"));
-        signInButton.click(); // Kliknij na przycisk SignIn
+        HotelMainPage HotelMainPage= new HotelMainPage(this.driver);
+        HotelMainPage.clickSignIn();
 
         WebElement registerEmailInput = this.driver.findElement(By.id("email_create"));
         registerEmailInput.clear(); // Wyczysc pole tekstowe przed wpisaniem

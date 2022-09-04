@@ -15,11 +15,12 @@ import static org.junit.Assert.assertTrue;
 
 public class HotelTest {
 
-    private WebDriver driver;
     private final static String PERMANENT_LOGIN = "mytest@cl-test.com";
     private final static String PERMANENT_PASSWORD = "mytestPassword";
+    private WebDriver driver;
+
     @Before
-    public void setUp(){
+    public void setUp() {
         //        Ustaw gdzie jest chromedriver -> STEROWNIK
         System.setProperty("webdriver.chrome.driver",
                 "src/main/resources/drivers/chromedriver.exe");
@@ -27,11 +28,13 @@ public class HotelTest {
         this.driver = new ChromeDriver();
         //        Jesli test nie przechodzi poprawnie, to pewnie za wolno laduje sie strona -> Dodaj czekanie.
         this.driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        this.driver.get("https://hotel-testlab.coderslab.pl/en/");
+
     }
 
     @After
-    public void tearDown(){
-        driver.quit();
+    public void tearDown() {
+//        driver.quit();
     }
 
     @Test
@@ -39,9 +42,6 @@ public class HotelTest {
 
         String email = new Random().nextInt(100000000) + "TEA26@test.com";
         String expectedAlertText = "Your account has been created.";
-
-        // Wejdz na strone glowna
-        this.driver.get("https://hotel-testlab.coderslab.pl/en/");
 
         HotelMainPage hotelMainPage = new HotelMainPage(this.driver);
         hotelMainPage.clickSignIn();
@@ -62,7 +62,7 @@ public class HotelTest {
     }
 
     @Test
-    public void testSearchAnyHotel(){
+    public void testSearchAnyHotel() {
         HotelMainPage hotelMainPage = new HotelMainPage(this.driver);
         hotelMainPage.clickSignIn();
 
@@ -75,12 +75,19 @@ public class HotelTest {
         hotelMainPage.searchForHotelRoomsBetweenDates("The Hotel Prime", "22-09-2022", "29-09-2022");
 
         HotelSearchRoomResultsPage searchRoomResultsPage = new HotelSearchRoomResultsPage(this.driver);
-        assertTrue(searchRoomResultsPage.isAnyRoomOnTheListPresent());
         assertTrue(searchRoomResultsPage.getAvailableRoomNumber() > 0);
 
     }
 
-
+    @Test
+    public void testBookRoomInHotel() {
+        HotelMainPage hotelMainPage = new HotelMainPage(driver);
+        hotelMainPage.searchForHotelRoomsBetweenDates("The Hotel Prime", "22-09-2022", "29-09-2022");
+        HotelSearchRoomResultsPage searchRoomResultsPage = new HotelSearchRoomResultsPage(this.driver);
+        searchRoomResultsPage.bookAnyRoom();
+        HotelQuickOrderPage quickOrderPage = new HotelQuickOrderPage(driver);
+        assertTrue(quickOrderPage.isThereRoomInBasket());
+    }
 
 
 }
